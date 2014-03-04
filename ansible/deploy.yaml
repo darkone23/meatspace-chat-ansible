@@ -1,9 +1,6 @@
 - name: meat provisioning the chats
   hosts: all
 
-  sudo: yes
-  sudo_user: "{{ meatspace_user }}"
-
   vars:
     app_home: ~/{{ app_name }}
 

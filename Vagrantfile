@@ -9,10 +9,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "forwarded_port", guest: 80, host: 8080
 
   config.vm.provision :ansible do |ansible|
-      ansible.playbook = "ansible/provision.yaml"
+    ansible.playbook = "ansible/provision.yaml"
   end
 
   config.vm.provision :ansible do |ansible|
-      ansible.playbook = "ansible/deploy.yaml"
+    ansible.playbook = "ansible/deploy.yaml"
+    ansible.raw_arguments = '--private-key=~/.ssh/id_rsa'
+    ansible.extra_vars = { ansible_ssh_user: 'meat' }
   end
 end
