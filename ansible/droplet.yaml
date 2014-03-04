@@ -29,7 +29,9 @@
         image_id={{ image }}
         ssh_key_ids={{ ssh_key }}
       register: meat_droplet
-      notify: droplet info
+      notify:
+        - droplet info
+        - droplet available
 
     - name: destroying droplet..
       when: state == "absent"
@@ -45,3 +47,6 @@
       with_items:
         - "New droplet created with id: {{ meat_droplet.droplet.id }}"
         - "Available at ip: {{ meat_droplet.droplet.ip_address }}"
+
+    - name: droplet available
+      wait_for: host={{ meat_droplet.droplet.ip_address }} port=22

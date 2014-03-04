@@ -1,4 +1,4 @@
-## meatspace-chat Ansible
+## meatspace-chat ansible
 
 You can use this to install [meatspace-chat](https://github.com/meatspaces/meatspace-chat) on debian flavor boxes.
 Point it at your droplets, or your VMs, or whatever
