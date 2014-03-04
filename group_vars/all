@@ -1,0 +1,21 @@
+meatspace_user: meat
+meatspace_version: master
+meatspace_home: /var/www/meatspace
+
+meatspace_port: 3000
+
+meatspace_clients:
+  - blah-blah-api-key
+
+meatspace_whitelist:
+  - <twitter id>
+
+session_secret: CHANGEME
+
+domain_name: off
+
+analytics: your google analytics value
+analytics_host: your domain without the protocol (e.g. someurl.com)
+
+locale: en_US.UTF-8
+timezone: America/Los_Angeles

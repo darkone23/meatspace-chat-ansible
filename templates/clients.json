@@ -1,0 +1,6 @@
+[
+    {% for client in meatspace_clients %}
+      "{{ client }}"
+      {% if not loop.last %},{% endif %}
+    {% endfor%}
+]

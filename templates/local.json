@@ -1,0 +1,16 @@
+{
+    "domain": "http://127.0.0.1",
+    "port": {{ meatspace_port }},
+    "authPort": {{ meatspace_port }},
+    "session_secret": "{{ session_secret }}",
+    "analytics": "{{ analytics }}",
+    "analyticsHost": "{{ analytics_host }}",
+    "logger": "./logger",
+    "appId": "1",
+    "meatcounter_addrs" : ["ipc:///tmp/meatcounter.ipc", "tcp://127.0.0.1:9999"],
+    "meatcounter_inc_topic" : "meatspace.incoming",
+    "meatcounter_out_topic" : "meatspace.outgoing",
+    "twitter_key": "1",
+    "twitter_secret": "1",
+    "redis_db": 1
+}

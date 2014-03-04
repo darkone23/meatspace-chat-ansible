@@ -1,0 +1,149 @@
+- name: root provisioning
+  sudo: yes
+  hosts: all
+
+  tasks:
+    - name: ensuring the wheel group exists
+      group: name=wheel
+
+    - name: adding priveleges for the wheel group
+      lineinfile: >
+        dest=/etc/sudoers
+        state=present
+        regexp='^%wheel'
+        line='%wheel ALL=(ALL) NOPASSWD: ALL'
+
+    - name: creating meatspace home
+      file: path={{ meatspace_home|dirname }} state=directory
+
+    - name: creating meatspace user account
+      user: >
+        name={{ meatspace_user }}
+        home={{ meatspace_home }}
+        createhome=yes
+        group=wheel
+        shell=/bin/bash
+        generate_ssh_key=yes
+
+    - name: installing public key into meatspace account
+      copy: >
+        owner={{ meatspace_user }}
+        group=wheel
+        src=~/.ssh/id_rsa.pub
+        dest={{ meatspace_home }}/.ssh/authorized_keys
+
+    - name: installing ip tables network configuration
+      copy: src=files/iptables dest=/etc/network/if-pre-up.d/ mode=550
+
+    - name: installing ip table rules
+      copy: src=files/iptables.up.rules dest=/etc/
+      notify: update iptables
+
+    - name: installing nginx configuration
+      template: src=templates/nginx.conf dest=/etc/nginx/sites-enabled/default
+      notify: reload nginx
+
+    # causes problems with vagrant ssh connection... 
+    # - name: installing sshd configuration
+    #   copy: src=files/sshd_config dest=/etc/ssh
+    #   notify: reload sshd
+
+    - name: checking date-time/locale configuration
+      command: diff /usr/share/zoneinfo/{{ timezone }} /etc/localtime
+      register: locale_diff
+      changed_when: off
+      ignore_errors: yes
+
+    - name: setting locale
+      command: "{{ item }}"
+      when: locale_diff|failed
+      with_items:
+        - /usr/sbin/locale-gen {{ locale }}
+        - /usr/sbin/update-locale LANG={{ locale }} LC_ALL={{ locale }}
+        - /bin/cp /usr/share/zoneinfo/{{ timezone }} /etc/localtime
+
+    - name: setting timezone
+      template: src=templates/timezone dest=/etc/timezone
+      notify: update tzdata
+
+    - name: refreshing apt cache
+      apt: update_cache=yes
+
+    - name: installing system packages
+      apt: pkg={{ item }}
+      with_items:
+        - vim-athena
+        - build-essential
+        - wget
+        - git
+        - curl
+        - python-pycurl
+        - libpcre3
+        - libpcre3-dev
+        - libssl-dev
+        - libzmq-dev
+
+    - name: installing third party repositories
+      apt_repository: 'repo="{{ item }}"'
+      with_items:
+        - deb http://ppa.launchpad.net/nginx/development/ubuntu {{ ansible_lsb.codename }} main
+        - deb-src http://ppa.launchpad.net/nginx/development/ubuntu {{ ansible_lsb.codename }} main
+        - deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu {{ ansible_lsb.codename }} main
+        - deb-src http://ppa.launchpad.net/chris-lea/node.js/ubuntu {{ ansible_lsb.codename }} main
+
+    - name: installing third party keyfiles
+      apt_key: url={{ item }}
+      with_items:
+        - http://keyserver.ubuntu.com:11371/pks/lookup?op=get&search=0x00A6F0A3C300EE8C
+        - http://keyserver.ubuntu.com:11371/pks/lookup?op=get&search=0xB9316A7BC7917B12
+
+    - name: refreshing apt for third party packages
+      apt: update_cache=yes
+
+    - name: installing third party packages
+      apt: pkg={{ item }}
+      with_items:
+        - nginx
+        - nodejs
+
+    - name: installing node forever
+      npm: name=forever global=yes
+
+
+  handlers:
+    - name: reload sshd
+      service: name=ssh state=reloaded
+
+    - name: reload nginx
+      service: name=nginx state=reloaded
+
+    - name: update iptables
+      shell: /etc/network/if-pre-up.d/iptables
+
+    - name: update tzdata
+      shell: /usr/sbin/dpkg-reconfigure --frontend noninteractive tzdata
+
+- name: meat provisioning
+  hosts: all
+
+  sudo: yes
+  sudo_user: "{{ meatspace_user }}"
+
+  tasks:
+    - name: cloning meatspace-chat repository
+      git: >
+        repo=https://github.com/meatspaces/meatspace-chat.git
+        dest=~/meatspace-chat
+        version={{ meatspace_version }}
+
+    - name: installing node dependencies
+      shell: >
+        chdir=~/meatspace-chat
+        npm install
+
+    - name: installing meatspace configuration
+      template: src={{ item }} dest=~/meatspace-chat/
+      with_items:
+        - templates/local.json
+        - templates/clients.json
+        - templates/whitelist.json

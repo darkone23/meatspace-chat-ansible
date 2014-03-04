@@ -1,0 +1,6 @@
+[
+    {% for item in meatspace_whitelist %}
+      "{{ item }}"
+      {% if not loop.last %},{% endif %}
+    {% endfor%}
+]
