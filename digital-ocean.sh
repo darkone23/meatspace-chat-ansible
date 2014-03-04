@@ -2,9 +2,12 @@
 
 set -e
 
-source .digital-ocean-credentials
-curl -s https://raw.github.com/ansible/ansible/devel/plugins/inventory/digital_ocean.py > ansible/dohosts
-chmod +x ansible/dohosts
+# checking for dependencies
+which ansible-galaxy ansible-playbook curl > /dev/null
+
+function dependencies() {
+    source .digital-ocean-credentials
+}
 
 function create_droplet() {
     if [ ! $# = 2 ]
@@ -12,6 +15,13 @@ function create_droplet() {
        echo "usage: ./digital-ocean.sh create region_id size_id"
        exit 1
     fi
+
+    # creation deps
+    python -c 'import dopy'
+    ansible-galaxy install -r ansible/roles.txt -p ansible/roles --force
+    curl -s https://raw.github.com/ansible/ansible/devel/plugins/inventory/digital_ocean.py > ansible/dohosts
+    chmod +x ansible/dohosts
+
     ansible-playbook -i localhost, ansible/droplet.yaml -e region=$1 -e size=$2 -c local
     ansible-playbook -i ansible/dohosts ansible/provision.yaml -u root
     ansible-playbook -i ansible/dohosts ansible/deploy.yaml -u meat
@@ -48,12 +58,14 @@ case "$1" in
     ;;
 "create")
     shift
+    dependencies
     create_droplet $@
     ;;
 "destroy")
     shift
+    dependencies
     destroy_droplet $@
     ;;
-*) echo "Usage: ./digital-ocean.sh [regions|sizes|images|ssh_keys]"
+*) echo "Usage: ./digital-ocean.sh [create|destroy|regions|sizes|images|ssh_keys]"
    ;;
 esac

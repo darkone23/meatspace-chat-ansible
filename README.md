@@ -25,6 +25,41 @@ visit [your local meat-chat](http://localhost:8080)
 
 or `ssh meat@localhost -p 2222`
 
+
+### Deploying to Digital Ocean
+
+Make sure you have a digital ocean client id and api key: use them to create a file named `.digital-ocean-credentials` with the contents:
+
+```
+#!/bin/sh
+
+export DO_API_KEY="MY_API_KEY"
+export DO_CLIENT_ID="MY_CLIENT_ID"
+```
+
+Then create a new instance, providing the region id and desired droplet size. You will need ansible & dopy installed.
+
+```
+# ./digital-ocean.sh create <region-id> <size-id>
+./digital-ocean.sh create 1 66
+```
+
+This will create a 512 instance in NYC. Visit the IP after it is all done and visit your meatspace!
+
+To tear it down:
+
+```
+./digital-ocean.sh destroy <droplet-id>
+```
+
+Check for other sizes and regions using the script:
+
+```
+./digital-ocean.sh regions
+./digital-ocean.sh sizes
+```
+
+
 ### Deploying over SSH
 
 **warning, this will install packages and configuration at the system level, don't do this unless you know what you are doing**
@@ -51,9 +86,5 @@ Or, if you just want to update the running version of meatspace:
 ```sh
 ansible-playbook -i hosts ansible/deploy.yaml -u meat
 ```
-
-### Deploying to Digital Ocean
-
-Coming soon...
 
 Happy chats
