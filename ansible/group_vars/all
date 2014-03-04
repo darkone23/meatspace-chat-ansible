@@ -1,3 +1,5 @@
+app_name: meatspace-chat
+
 meatspace_user: meat
 meatspace_version: master
 meatspace_home: /var/www/meatspace

@@ -82,6 +82,7 @@
         - wget
         - git
         - curl
+        - python-dev
         - python-pycurl
         - python-virtualenv
         - libpcre3
@@ -119,7 +120,6 @@
     - name: installing node packages
       npm: name={{ item }} global=yes
       with_items:
-        - nodemon
         - bower
         - grunt-cli
 
