@@ -1,52 +1,63 @@
 ## meatspace-chat ansible
 
-You can use this to install [meatspace-chat](https://github.com/meatspaces/meatspace-chat) on debian flavor boxes.
-Point it at your droplets, or your VMs, or whatever
+You can use this to install [meatspace-chat](https://github.com/meatspaces/meatspace-chat) on ubuntu servers.
+
+Point it at your droplets, or your VMs, or whatever.
+
+### Dependencies
+
+The only hard dependency is ansible and a unix-like host (osx, linux, etc). Most of the time you can install ansible with:
+
+    sudo pip install ansible
 
 ### Configuration
 
-You can configure your instance by tweaking the settings in your ansible [group vars](https://github.com/eggsby/meatspace-chat-ansible/blob/master/ansible/group_vars/all)
+You can configure your meatspace instance by tweaking the settings in your ansible [group vars](https://github.com/eggsby/meatspace-chat-ansible/blob/master/ansible/group_vars/all)
 
 ### Deploying with Vagrant
 
-If you have vagrant and ansible installed locally you can deploy to a VM:
+If you have vagrant and virtualbox installed locally you can deploy to a VM:
 
-`./vagrant.sh`
+    ./vagrant.sh
 
 This will take a while.. it downloads a server image from ubuntu, then installs a bunch of packages.
 
 Go somewhere else until this thing finishes.
 
-By the end of the process you should have a production quality meatspace-chat running in a vm, forwarded to localhost:8080
-
-#### Checking it out
-
-visit [your local meat-chat](http://localhost:8080)
-
-or `ssh meat@localhost -p 2222`
+By the end of the process you should have meatspace-chat running in a vm, forwarded to [localhost:8080](http://localhost:8080)
 
 
 ### Deploying to Digital Ocean
 
-Make sure you have a digital ocean client id and api key: use them to create a file named `.digital-ocean-credentials` with the contents:
+#### Setup
 
-```
+Using the digital ocean python library you can spin up meatspace chat instances. Make sure you have the digital ocean library:
+
+    sudo pip install dopy
+
+You will also need to provide your client id and api key, put them in a file named `.digital-ocean-credentials` with the contents:
+
+```sh
 #!/bin/sh
 
 export DO_API_KEY="MY_API_KEY"
 export DO_CLIENT_ID="MY_CLIENT_ID"
 ```
 
-Then create a new instance, providing the region id and desired droplet size. You will need ansible & dopy installed.
+#### Deployment
 
-```
-# ./digital-ocean.sh create <region-id> <size-id>
-./digital-ocean.sh create 1 66
-```
+To spin up a new meatspace-chat droplet provide the region id and desired droplet size.
 
-This will create a 512 instance in NYC. Visit the IP after it is all done and visit your meatspace!
+    # ./digital-ocean.sh create <region-id> <size-id>
+    ./digital-ocean.sh create 1 66
 
-To tear it down:
+This will create a 512MB droplet in NYC.
+
+Visit the IP after it finished provisioning and visit your new meatspace-chat!
+
+#### Teardown
+
+You can use the droplet id to tear down the instances as well:
 
 ```
 ./digital-ocean.sh destroy <droplet-id>
@@ -62,6 +73,8 @@ Check for other sizes and regions using the script:
 
 ### Deploying over SSH
 
+It's also possible to deploy directly to an existing ubuntu server over SSH.
+
 **warning, this will install packages and configuration at the system level, don't do this unless you know what you are doing**
 
 Create a file named `hosts` with the contents:
@@ -71,7 +84,7 @@ Create a file named `hosts` with the contents:
 your.server.name
 ```
 
-Then run ansible:
+Then run the ansible steps:
 
 ```sh
 ansible-galaxy install -r ansible/roles.txt -p ansible/roles
@@ -79,12 +92,12 @@ ansible-playbook -i hosts ansible/provision.yaml
 ansible-playbook -i hosts ansible/deploy.yaml -u meat
 ```
 
-You may need to provide credentials if your system requires it `ansible-playbook -kK`
+You may need to provide credentials for provisioning if your system requires it `ansible-playbook -kK`
 
-Or, if you just want to update the running version of meatspace:
+Now, if you just want to update the running version of meatspace:
 
 ```sh
 ansible-playbook -i hosts ansible/deploy.yaml -u meat
 ```
 
-Happy chats
+Happy chats!
