@@ -90,11 +90,14 @@
         - deb-src http://ppa.launchpad.net/nginx/development/ubuntu {{ ansible_lsb.codename }} main
         - deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu {{ ansible_lsb.codename }} main
         - deb-src http://ppa.launchpad.net/chris-lea/node.js/ubuntu {{ ansible_lsb.codename }} main
+        - deb http://ppa.launchpad.net/chris-lea/redis-server/ubuntu {{ ansible_lsb.codename }} main
+        - deb-src http://ppa.launchpad.net/chris-lea/redis-server/ubuntu {{ ansible_lsb.codename }} main
 
     - name: installing third party keyfiles
       apt_key: url={{ item }}
       with_items:
         - http://keyserver.ubuntu.com:11371/pks/lookup?op=get&search=0x00A6F0A3C300EE8C
+        - http://keyserver.ubuntu.com:11371/pks/lookup?op=get&search=0xB9316A7BC7917B12
         - http://keyserver.ubuntu.com:11371/pks/lookup?op=get&search=0xB9316A7BC7917B12
 
     - name: refreshing apt for third party packages
@@ -104,6 +107,7 @@
       apt: pkg={{ item }}
       with_items:
         - nginx
+        - redis-server
         - nodejs
 
     - name: installing node forever
