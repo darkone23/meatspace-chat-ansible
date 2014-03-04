@@ -31,7 +31,7 @@ or `ssh meat@localhost -p 2222`
 
 Create a file named `hosts` with the contents:
 
-```ini
+```
 [meatspace-chat]
 your.server.name
 ```
@@ -40,13 +40,16 @@ Then run ansible:
 
 ```sh
 ansible-galaxy install -r ansible/roles.txt -p ansible/roles
-ansible-playbook -i hosts ansible/provision.yaml ansible/deploy.yaml
+ansible-playbook -i hosts ansible/provision.yaml
+ansible-playbook -i hosts ansible/deploy.yaml -u meat
 ```
+
+You may need to provide credentials if your system requires it `ansible-playbook -kK`
 
 Or, if you just want to update the running version of meatspace:
 
 ```sh
-ansible-playbook -i hosts ansible/deploy.yaml
+ansible-playbook -i hosts ansible/deploy.yaml -u meat
 ```
 
 ### Deploying to Digital Ocean

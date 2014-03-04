@@ -57,14 +57,9 @@
       template: src=templates/timezone dest=/etc/timezone
       notify: update tzdata
 
-    - name: refreshing apt cache
-      apt: update_cache=yes
-      register: package_refresh
+    - name: upgrading system
+      apt: update_cache=yes upgrade=full
  
-    - name: updgrading system
-      when: package_refresh|changed
-      apt: upgrade=full
-
     - name: installing system packages
       apt: pkg={{ item }}
       with_items:
@@ -95,7 +90,6 @@
       apt_key: url={{ item }}
       with_items:
         - http://keyserver.ubuntu.com:11371/pks/lookup?op=get&search=0x00A6F0A3C300EE8C
-        - http://keyserver.ubuntu.com:11371/pks/lookup?op=get&search=0xB9316A7BC7917B12
         - http://keyserver.ubuntu.com:11371/pks/lookup?op=get&search=0xB9316A7BC7917B12
 
     - name: refreshing apt for third party packages
