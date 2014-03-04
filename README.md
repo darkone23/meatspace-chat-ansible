@@ -55,6 +55,10 @@ This will create a 512MB droplet in NYC.
 
 Visit the IP after it finished provisioning and visit your new meatspace-chat!
 
+If you ever want to update your instance to the latest version & configuration:
+
+    ./digital-ocean.sh deploy
+
 #### Teardown
 
 You can use the droplet id to tear down the instances as well:

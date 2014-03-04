@@ -2,11 +2,31 @@
 
 set -e
 
-# checking for dependencies
-which ansible-galaxy ansible-playbook curl > /dev/null
-
 function dependencies() {
-    source .digital-ocean-credentials
+    # checking for dependencies
+    which ansible-galaxy ansible-playbook curl > /dev/null
+    python -c 'import dopy'
+
+    if [ -n "${DO_API_KEY}" ]; then
+        source .digital-ocean-credentials
+    fi
+
+    if [ ! -d ansible/roles/eggsby.supervise ]; then
+        ansible-galaxy install -r ansible/roles.txt -p ansible/roles --force
+    fi
+
+    if [ ! -x ansible/dohosts ]; then
+        curl -s https://raw.github.com/ansible/ansible/devel/plugins/inventory/digital_ocean.py > ansible/dohosts
+        chmod +x ansible/dohosts
+    fi
+}
+
+function provision_droplet() {
+    ansible-playbook -i ansible/dohosts ansible/provision.yaml -u root
+}
+
+function deploy_droplet() {
+    ansible-playbook -i ansible/dohosts ansible/deploy.yaml -u meat
 }
 
 function create_droplet() {
@@ -16,15 +36,9 @@ function create_droplet() {
        exit 1
     fi
 
-    # creation deps
-    python -c 'import dopy'
-    ansible-galaxy install -r ansible/roles.txt -p ansible/roles --force
-    curl -s https://raw.github.com/ansible/ansible/devel/plugins/inventory/digital_ocean.py > ansible/dohosts
-    chmod +x ansible/dohosts
-
     ansible-playbook -i localhost, ansible/droplet.yaml -e region=$1 -e size=$2 -c local
-    ansible-playbook -i ansible/dohosts ansible/provision.yaml -u root
-    ansible-playbook -i ansible/dohosts ansible/deploy.yaml -u meat
+    provision_droplet
+    deploy_droplet
     echo "Your meatspace chat is now available at the above IP"
 }
 
@@ -65,6 +79,16 @@ case "$1" in
     shift
     dependencies
     destroy_droplet $@
+    ;;
+"provision")
+    shift
+    dependencies
+    provision_droplet $@
+    ;;
+"deploy")
+    shift
+    dependencies
+    deploy_droplet $@
     ;;
 *) echo "Usage: ./digital-ocean.sh [create|destroy|regions|sizes|images|ssh_keys]"
    ;;
