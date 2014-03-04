@@ -110,9 +110,12 @@
         - redis-server
         - nodejs
 
-    - name: installing node forever
-      npm: name=forever global=yes
-
+    - name: installing node packages
+      npm: name={{ item }} global=yes
+      with_items:
+        - nodemon
+        - bower
+        - grunt-cli
 
   handlers:
     - name: reload sshd
@@ -140,10 +143,14 @@
         dest=~/meatspace-chat
         version={{ meatspace_version }}
 
-    - name: installing node dependencies
+    - name: installing meatspace-chat dependencies
       shell: >
         chdir=~/meatspace-chat
-        npm install
+        {{ item }}
+      with_items:
+        - npm install
+        - bower install
+        - npm run-script grunt build
 
     - name: installing meatspace configuration
       template: src={{ item }} dest=~/meatspace-chat/
