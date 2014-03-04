@@ -11,7 +11,7 @@ You can configure your instance by tweaking the settings in your ansible [group 
 
 If you have vagrant and ansible installed locally you can deploy to a VM:
 
-`./install.sh`
+`./vagrant.sh`
 
 This will take a while.. it downloads a server image from ubuntu, then installs a bunch of packages.
 
@@ -19,14 +19,38 @@ Go somewhere else until this thing finishes.
 
 By the end of the process you should have a production quality meatspace-chat running in a vm, forwarded to localhost:8080
 
-### Deploying to Digital Ocean
-
-Coming soon...
-
-## Checking it out
+#### Checking it out
 
 visit [your local meat-chat](http://localhost:8080)
 
 or `ssh meat@localhost -p 2222`
+
+### Deploying over SSH
+
+**warning, this will install packages and configuration at the system level, don't do this unless you know what you are doing**
+
+Create a file named `hosts` with the contents:
+
+```ini
+[meatspace-chat]
+your.server.name
+```
+
+Then run ansible:
+
+```sh
+ansible-galaxy install -r ansible/roles.txt -p ansible/roles
+ansible-playbook -i hosts ansible/provision.yaml ansible/deploy.yaml
+```
+
+Or, if you just want to update the running version of meatspace:
+
+```sh
+ansible-playbook -i hosts ansible/deploy.yaml
+```
+
+### Deploying to Digital Ocean
+
+Coming soon...
 
 Happy chats

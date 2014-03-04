@@ -6,6 +6,6 @@ set -e
 which vagrant ansible-playbook ansible-galaxy
 
 # install meatspace-chat into a vm, exposed on localhost:8080
-ansible-galaxy install eggsby.supervisor eggsby.supervise -f -p ansible/roles
+ansible-galaxy install -r ansible/roles.txt -p ansible/roles
 vagrant up
 vagrant provision
