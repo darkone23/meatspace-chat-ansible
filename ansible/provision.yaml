@@ -39,15 +39,6 @@
       copy: src=files/iptables.up.rules dest=/etc/
       notify: update iptables
 
-    - name: installing nginx configuration
-      template: src=templates/nginx.conf dest=/etc/nginx/sites-enabled/default
-      notify: reload nginx
-
-    # causes problems with vagrant ssh connection... 
-    # - name: installing sshd configuration
-    #   copy: src=files/sshd_config dest=/etc/ssh
-    #   notify: reload sshd
-
     - name: checking date-time/locale configuration
       command: diff /usr/share/zoneinfo/{{ timezone }} /etc/localtime
       register: locale_diff
@@ -122,6 +113,16 @@
       with_items:
         - bower
         - grunt-cli
+
+    - name: installing nginx configuration
+      template: src=templates/nginx.conf dest=/etc/nginx/sites-enabled/default
+      notify: reload nginx
+
+    # causes problems with vagrant ssh connection...
+    # - name: installing sshd configuration
+    #   copy: src=files/sshd_config dest=/etc/ssh
+    #   notify: reload sshd
+
 
   handlers:
     - name: reload sshd
