@@ -1,5 +1,5 @@
 - name: meat provisioning the chats
-  hosts: all
+  hosts: meatspace-chat
 
   vars:
     app_home: ~/{{ app_name }}

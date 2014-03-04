@@ -1,6 +1,7 @@
-vagrant_ansible_inventory_default
+vagrant_ansible*
 .vagrant/
 roles/
 ansible/hosts
 ansible/dohosts
 .digital-ocean-credentials
+ansible-digital_ocean.cache

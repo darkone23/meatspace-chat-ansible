@@ -1,6 +1,7 @@
 - name: provisioning machine with dependencies
+
   sudo: yes
-  hosts: all
+  hosts: meatspace-chat
 
   tasks:
     - name: ensuring the wheel group exists

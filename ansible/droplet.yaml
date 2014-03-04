@@ -1,0 +1,47 @@
+- hosts: localhost
+  
+  vars:
+    state: present
+    name: meatspace-chat
+    image: 350076
+    size: SIZE_ID
+    region: REGION_ID
+    id: DROPLET_ID
+    ssh_key: "{{ do_ssh_key.ssh_key.id }}"
+
+  tasks:
+    - name: ensuring ssh key is present
+      digital_ocean: >
+        state=present
+        command=ssh
+        name=meatspace-ssh
+        ssh_pub_key='{{ lookup("file", "~/.ssh/id_rsa.pub") }}'
+      register: 'do_ssh_key'
+
+    - name: creating droplet...
+      when: state == "present"
+      digital_ocean: >
+        command=droplet
+        state={{ state }}
+        name={{ name }}
+        size_id={{ size }}
+        region_id={{ region }}
+        image_id={{ image }}
+        ssh_key_ids={{ ssh_key }}
+      register: meat_droplet
+      notify: droplet info
+
+    - name: destroying droplet..
+      when: state == "absent"
+      digital_ocean: >
+         command=droplet
+         state={{ state }}
+         id={{ id }}
+         name={{ name }}
+
+  handlers:
+    - name: droplet info
+      debug: 'msg="{{ item }}"'
+      with_items:
+        - "New droplet created with id: {{ meat_droplet.droplet.id }}"
+        - "Available at ip: {{ meat_droplet.droplet.ip_address }}"
