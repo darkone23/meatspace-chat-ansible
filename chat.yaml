@@ -1,0 +1,34 @@
+- name: meat provisioning the chats
+  hosts: all
+
+  sudo: yes
+  sudo_user: "{{ meatspace_user }}"
+
+  pre_tasks:
+    - name: cloning meatspace-chat repository
+      git: >
+        repo=https://github.com/meatspaces/meatspace-chat.git
+        dest=~/meatspace-chat
+        version={{ meatspace_version }}
+
+    - name: installing meatspace-chat dependencies
+      shell: >
+        chdir=~/meatspace-chat
+        {{ item }}
+      with_items:
+        - npm install
+        - bower install
+        - npm run-script grunt build
+
+    - name: installing meatspace configuration
+      template: src={{ item }} dest=~/meatspace-chat/
+      with_items:
+        - templates/local.json
+        - templates/clients.json
+        - templates/whitelist.json
+
+  roles:
+    - role: eggsby.supervise
+      name: meatspace-chat
+      app_home: ~/meatspace-chat
+      command: npm start

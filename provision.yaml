@@ -1,4 +1,4 @@
-- name: root provisioning
+- name: provisioning machine with dependencies
   sudo: yes
   hosts: all
 
@@ -83,6 +83,7 @@
         - git
         - curl
         - python-pycurl
+        - python-virtualenv
         - libpcre3
         - libpcre3-dev
         - libssl-dev
@@ -134,32 +135,3 @@
 
     - name: update tzdata
       shell: /usr/sbin/dpkg-reconfigure --frontend noninteractive tzdata
-
-- name: meat provisioning
-  hosts: all
-
-  sudo: yes
-  sudo_user: "{{ meatspace_user }}"
-
-  tasks:
-    - name: cloning meatspace-chat repository
-      git: >
-        repo=https://github.com/meatspaces/meatspace-chat.git
-        dest=~/meatspace-chat
-        version={{ meatspace_version }}
-
-    - name: installing meatspace-chat dependencies
-      shell: >
-        chdir=~/meatspace-chat
-        {{ item }}
-      with_items:
-        - npm install
-        - bower install
-        - npm run-script grunt build
-
-    - name: installing meatspace configuration
-      template: src={{ item }} dest=~/meatspace-chat/
-      with_items:
-        - templates/local.json
-        - templates/clients.json
-        - templates/whitelist.json

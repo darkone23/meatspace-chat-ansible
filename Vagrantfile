@@ -9,6 +9,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "forwarded_port", guest: 80, host: 8080
 
   config.vm.provision :ansible do |ansible|
-      ansible.playbook = "meatspace.yaml"
+      ansible.playbook = "playbooks/provision.yaml"
+  end
+
+  config.vm.provision :ansible do |ansible|
+      ansible.playbook = "playbooks/chat.yaml"
   end
 end
