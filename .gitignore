@@ -3,5 +3,5 @@ vagrant_ansible*
 roles/
 ansible/hosts
 ansible/dohosts
-.digital-ocean-credentials
+.do
 ansible-digital_ocean.cache

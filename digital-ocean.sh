@@ -4,10 +4,10 @@ set -e
 
 function dependencies() {
     # checking for dependencies
-    which ansible-galaxy ansible-playbook curl
+    which ansible-galaxy ansible-playbook curl > /dev/null || (echo "Install required dependencies" && exit 1)
     python -c 'import dopy'
 
-    source .digital-ocean-credentials
+    source .do
 
     if [ ! -d ansible/roles/eggsby.supervise ]; then
         ansible-galaxy install -r ansible/roles.txt -p ansible/roles --force
