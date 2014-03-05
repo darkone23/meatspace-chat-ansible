@@ -4,7 +4,7 @@ set -e
 
 function dependencies() {
     # checking for dependencies
-    which ansible-galaxy ansible-playbook curl > /dev/null
+    which ansible-galaxy ansible-playbook curl
     python -c 'import dopy'
 
     source .digital-ocean-credentials
