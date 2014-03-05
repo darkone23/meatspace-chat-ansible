@@ -35,14 +35,7 @@ Using the digital ocean python library you can spin up meatspace chat instances.
 
     sudo pip install dopy
 
-You will also need to provide your client id and api key, put them in a file named `.digital-ocean-credentials` with the contents:
-
-```sh
-#!/bin/sh
-
-export DO_API_KEY="MY_API_KEY"
-export DO_CLIENT_ID="MY_CLIENT_ID"
-```
+You will also need to provide your client id and api key, put them in a file named `.do`. An [example](https://github.com/eggsby/meatspace-chat-ansible/blob/master/.do.example) configuration file is provided.
 
 #### Deployment
 
