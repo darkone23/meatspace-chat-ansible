@@ -14,7 +14,7 @@
       digital_ocean: >
         state=present
         command=ssh
-        name=meatspace-ssh
+        name={{ ansible_hostname }}
         ssh_pub_key='{{ lookup("file", "~/.ssh/id_rsa.pub") }}'
       register: 'do_ssh_key'
 

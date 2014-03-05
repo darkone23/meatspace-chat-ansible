@@ -7,9 +7,7 @@ function dependencies() {
     which ansible-galaxy ansible-playbook curl > /dev/null
     python -c 'import dopy'
 
-    if [ -n "${DO_API_KEY}" ]; then
-        source .digital-ocean-credentials
-    fi
+    source .digital-ocean-credentials
 
     if [ ! -d ansible/roles/eggsby.supervise ]; then
         ansible-galaxy install -r ansible/roles.txt -p ansible/roles --force
