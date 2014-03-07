@@ -6,6 +6,9 @@ meatspace_home: /var/www/meatspace
 
 meatspace_port: 3000
 
+meatspace_auth_user: off
+meatspace_auth_pass: off
+
 meatspace_clients:
   - blah-blah-api-key
 

@@ -113,6 +113,16 @@
       template: src=templates/nginx.conf dest=/etc/nginx/sites-enabled/default
       notify: reload nginx
 
+    - name: generating http auth token
+      when: meatspace_auth_user and meatspace_auth_pass
+      command: openssl passwd {{ meatspace_auth_pass }}
+      register: password_token
+
+    - name: installing nginx http authentication
+      when: meatspace_auth_user and meatspace_auth_pass
+      template: src=templates/htpasswd dest=/etc/nginx/conf.d/
+      notify: reload nginx
+
     # causes problems with vagrant ssh connection...
     # - name: installing sshd configuration
     #   copy: src=files/sshd_config dest=/etc/ssh
