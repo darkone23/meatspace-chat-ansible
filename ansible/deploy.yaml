@@ -20,6 +20,7 @@
 
     - name: installing meatspace configuration
       template: src={{ item }} dest={{ app_home }}/
+      register: configs
       with_items:
         - templates/local.json
         - templates/clients.json
@@ -29,3 +30,8 @@
     - role: eggsby.supervise
       name: meatspace-chat
       command: node app.js
+
+  tasks:
+    - name: restarting meatspace
+      supervisorctl: name=meatspace-chat state=restarted {{ super_args }}
+      when: configs|changed
