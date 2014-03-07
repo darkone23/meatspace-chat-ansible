@@ -33,6 +33,14 @@
         - droplet info
         - droplet available
 
+    - name: checking for droplet in known hosts
+      when: state == "present"
+      command: ssh-keygen -F {{ meat_droplet.droplet.ip_address }}
+      changed_when: off
+      register: known_host
+      notify:
+        - removing droplet from known hosts
+
     - name: destroying droplet..
       when: state == "absent"
       digital_ocean: >
@@ -50,3 +58,7 @@
 
     - name: droplet available
       wait_for: host={{ meat_droplet.droplet.ip_address }} port=22
+
+    - name: removing droplet from known hosts
+      when: known_host.stdout.find(meat_droplet.droplet.ip_address)
+      command: ssh-keygen -R {{ meat_droplet.droplet.ip_address }}
