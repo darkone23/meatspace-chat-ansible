@@ -1,4 +1,11 @@
+session_secret: CHANGEME
+
+domain_name: off
+
 app_name: meatspace-chat
+
+locale: en_US.UTF-8
+timezone: America/Los_Angeles
 
 meatspace_user: meat
 meatspace_version: master
@@ -10,17 +17,16 @@ meatspace_auth_user: off
 meatspace_auth_pass: off
 
 meatspace_clients:
-  - blah-blah-api-key
+  - some client api key
 
 meatspace_whitelist:
-  - <twitter id>
-
-session_secret: CHANGEME
-
-domain_name: off
+  - some twitter id whitelist
 
 analytics: your google analytics value
 analytics_host: your domain without the protocol (e.g. someurl.com)
 
-locale: en_US.UTF-8
-timezone: America/Los_Angeles
+twitter_key: 1
+twitter_secret: 1
+
+redis_db: 1
+app_id: 1
