@@ -28,4 +28,4 @@
   roles:
     - role: eggsby.supervise
       name: meatspace-chat
-      command: npm start
+      command: node app.js
