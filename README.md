@@ -14,6 +14,9 @@ The only hard dependency is ansible and a unix-like host (osx, linux, etc). Most
 
 You can configure your meatspace instance by tweaking the settings in your ansible [group vars](https://github.com/eggsby/meatspace-chat-ansible/blob/master/ansible/group_vars/all)
 
+    cp ansible/group_vars/all ansible/group_vars/meatspace-chat
+    # tweak settings in ansible/group_vars/meatspace-chat
+
 ### Deploying with Vagrant
 
 If you have vagrant and virtualbox installed locally you can deploy to a VM:
