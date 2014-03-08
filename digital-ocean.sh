@@ -7,7 +7,9 @@ function dependencies() {
     which ansible-galaxy ansible-playbook curl > /dev/null || (echo "Install required dependencies" && exit 1)
     python -c 'import dopy'
 
-    source .do
+    if [ ! -n "${DO_API_KEY}" ]; then
+        source .do
+    fi
 
     if [ ! -d ansible/roles/eggsby.supervise ]; then
         ansible-galaxy install -r ansible/roles.txt -p ansible/roles --force
@@ -20,35 +22,43 @@ function dependencies() {
 }
 
 function provision_droplet() {
-    ansible-playbook -i ansible/dohosts ansible/provision.yaml -u root
+    ansible-playbook -i ansible/dohosts ansible/provision.yaml -u root $@
 }
 
 function deploy_droplet() {
-    ansible-playbook -i ansible/dohosts ansible/deploy.yaml -u meat
+    ansible-playbook -i ansible/dohosts ansible/deploy.yaml -u meat $@
+}
+
+function install_droplet() {
+    provision_droplet $@
+    deploy_droplet $@
 }
 
 function create_droplet() {
-    if [ ! $# = 2 ]
+    if [ $# -lt 2 ]
     then
        echo "usage: ./digital-ocean.sh create region_id size_id"
        exit 1
     fi
-
-    ansible-playbook -i localhost, ansible/droplet.yaml -e region=$1 -e size=$2 -c local
-    provision_droplet
-    deploy_droplet
+    REGION=$1; shift
+    SIZE=$1; shift
+    ansible-playbook -i localhost, ansible/droplet.yaml -e region=$REGION -e size=$SIZE -c local $@
+    install_droplet $@
     echo "Your meatspace chat is now available at the above IP"
 }
 
 function destroy_droplet() {
-    if [ ! $# = 1 ]
+    if [ $# -lt 1 ]
     then
        echo "usage: ./digital-ocean.sh destroy droplet_id"
        exit 1
     fi
-    ansible-playbook -i localhost, ansible/droplet.yaml -e state=absent -e id=$1 -c local
+    ID=$1; shift
+    ansible-playbook -i localhost, ansible/droplet.yaml -e state=absent -e id=$ID -c local $@
     echo "Successfully destroyed droplet"
 }
+
+dependencies
 
 case "$1" in
 
@@ -70,24 +80,25 @@ case "$1" in
     ;;
 "create")
     shift
-    dependencies
     create_droplet $@
     ;;
 "destroy")
     shift
-    dependencies
     destroy_droplet $@
     ;;
 "provision")
     shift
-    dependencies
     provision_droplet $@
     ;;
 "deploy")
     shift
-    dependencies
     deploy_droplet $@
     ;;
-*) echo "Usage: ./digital-ocean.sh [create|destroy|regions|sizes|images|ssh_keys]"
+"install")
+    shift
+    install_droplet $@
+    ;;
+*)
+    echo "Available commands: create, destroy, install, deploy, provision, regions, sizes, images, ssh_keys"
    ;;
 esac
