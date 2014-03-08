@@ -7,7 +7,7 @@
   pre_tasks:
     - name: cloning meatspace-chat repository
       git: >
-        repo=https://github.com/meatspaces/meatspace-chat.git
+        repo={{ meatspace_repo }}
         dest={{ app_home }}
         version={{ meatspace_version }}
 

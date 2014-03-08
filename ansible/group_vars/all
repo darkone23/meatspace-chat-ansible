@@ -10,6 +10,7 @@ timezone: America/Los_Angeles
 meatspace_user: meat
 meatspace_version: master
 meatspace_home: /var/www/meatspace
+meatspace_repo: https://github.com/meatspaces/meatspace-chat.git
 
 meatspace_port: 3000
 
