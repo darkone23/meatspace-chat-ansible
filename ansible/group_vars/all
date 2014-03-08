@@ -16,6 +16,7 @@ ssh_keyname: meatspace-chat
 ssh_keyfile: ~/.ssh/id_rsa.pub
 
 meatspace_port: 3000
+zmq_port: 9999
 
 meatspace_auth_user: off
 meatspace_auth_pass: off

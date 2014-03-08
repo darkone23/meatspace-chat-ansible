@@ -120,7 +120,7 @@
 
     - name: installing nginx http authentication
       when: meatspace_auth_user and meatspace_auth_pass
-      template: src=templates/htpasswd dest=/etc/nginx/conf.d/
+      template: src=templates/htpasswd dest=/etc/nginx/conf.d/{{ chat_name }} group=www-data mode=440
       notify: reload nginx
 
     # causes problems with vagrant ssh connection...

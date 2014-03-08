@@ -1,5 +1,5 @@
 vagrant_ansible*
-ansible/group_vars/meatspace-chat
+ansible/group_vars/*
 .vagrant/
 roles/
 ansible/hosts
