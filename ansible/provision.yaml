@@ -1,7 +1,7 @@
 - name: provisioning machine with dependencies
 
   sudo: yes
-  hosts: meatspace-chat:default
+  hosts: "{{ chat_name }}:default"
 
   tasks:
     - name: ensuring the wheel group exists
@@ -30,7 +30,7 @@
       copy: >
         owner={{ meatspace_user }}
         group=wheel
-        src=~/.ssh/id_rsa.pub
+        src={{ ssh_keyfile }}
         dest={{ meatspace_home }}/.ssh/authorized_keys
 
     - name: installing ip tables network configuration
@@ -109,7 +109,7 @@
         - grunt-cli
 
     - name: installing nginx configuration
-      template: src=templates/nginx.conf dest=/etc/nginx/sites-enabled/default
+      template: src=templates/nginx.conf dest=/etc/nginx/sites-enabled/{{ domain_name or 'default' }}
       notify: reload nginx
 
     - name: generating http auth token

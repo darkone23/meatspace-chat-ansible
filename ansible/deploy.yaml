@@ -1,8 +1,8 @@
 - name: meat provisioning the chats
-  hosts: meatspace-chat:default
+  hosts: "{{ chat_name }}:default"
 
   vars:
-    app_home: ~/{{ app_name }}
+    app_home: ~/{{ chat_name }}
 
   pre_tasks:
     - name: cloning meatspace-chat repository
@@ -16,7 +16,7 @@
       with_items:
         - npm install
         - bower install
-        - npm run-script grunt build
+        - grunt build
 
     - name: installing meatspace configuration
       template: src={{ item }} dest={{ app_home }}/
@@ -28,10 +28,10 @@
 
   roles:
     - role: eggsby.supervise
-      name: meatspace-chat
+      name: "{{ chat_name }}"
       command: node app.js
 
   tasks:
     - name: restarting meatspace
-      supervisorctl: name=meatspace-chat state=restarted {{ super_args }}
+      supervisorctl: name={{ chat_name }} state=restarted {{ super_args }}
       when: configs|changed

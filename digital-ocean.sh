@@ -22,11 +22,11 @@ function dependencies() {
 }
 
 function provision_droplet() {
-    ansible-playbook -i ansible/dohosts ansible/provision.yaml -u root $@
+    ansible-playbook -i ansible/dohosts ansible/provision.yaml -u root -e chat_name=meatspace-chat $@
 }
 
 function deploy_droplet() {
-    ansible-playbook -i ansible/dohosts ansible/deploy.yaml -u meat $@
+    ansible-playbook -i ansible/dohosts ansible/deploy.yaml -u meat -e chat_name=meatspace-chat $@
 }
 
 function install_droplet() {
@@ -42,7 +42,7 @@ function create_droplet() {
     fi
     REGION=$1; shift
     SIZE=$1; shift
-    ansible-playbook -i localhost, ansible/droplet.yaml -e region=$REGION -e size=$SIZE -c local $@
+    ansible-playbook -i localhost, ansible/droplet.yaml -e chat_name=meatspace_chat -e region=$REGION -e size=$SIZE -c local $@
     install_droplet $@
     echo "Your meatspace chat is now available at the above IP"
 }

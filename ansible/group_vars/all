@@ -2,7 +2,7 @@ session_secret: CHANGEME
 
 domain_name: off
 
-app_name: meatspace-chat
+chat_name: meatspace-chat
 
 locale: en_US.UTF-8
 timezone: America/Los_Angeles
@@ -11,6 +11,9 @@ meatspace_user: meat
 meatspace_version: master
 meatspace_home: /var/www/meatspace
 meatspace_repo: https://github.com/meatspaces/meatspace-chat.git
+
+ssh_keyname: meatspace-chat
+ssh_keyfile: ~/.ssh/id_rsa.pub
 
 meatspace_port: 3000
 

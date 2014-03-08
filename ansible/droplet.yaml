@@ -2,7 +2,6 @@
   
   vars:
     state: present
-    name: meatspace-chat
     image: 350076
     size: SIZE_ID
     region: REGION_ID
@@ -14,8 +13,8 @@
       digital_ocean: >
         state=present
         command=ssh
-        name={{ ansible_hostname }}
-        ssh_pub_key='{{ lookup("file", "~/.ssh/id_rsa.pub") }}'
+        name={{ ssh_keyname }}
+        ssh_pub_key='{{ lookup("file", ssh_keyfile) }}'
       register: 'do_ssh_key'
 
     - name: creating droplet...
@@ -23,7 +22,7 @@
       digital_ocean: >
         command=droplet
         state={{ state }}
-        name={{ name }}
+        name={{ chat_name }}
         size_id={{ size }}
         region_id={{ region }}
         image_id={{ image }}
@@ -36,7 +35,7 @@
     - name: checking for droplet in known hosts
       when: state == "present"
       command: ssh-keygen -F {{ meat_droplet.droplet.ip_address }}
-      changed_when: off
+      changed_when: known_host.stdout.find(meat_droplet.droplet.ip_address)
       register: known_host
       notify:
         - removing droplet from known hosts
@@ -47,7 +46,7 @@
          command=droplet
          state={{ state }}
          id={{ id }}
-         name={{ name }}
+         name={{ chat_name }}
 
   handlers:
     - name: droplet info
