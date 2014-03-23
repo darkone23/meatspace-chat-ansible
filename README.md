@@ -87,8 +87,12 @@ your.server.name
 Then run the ansible steps:
 
 ```sh
-ansible-galaxy install -r ansible/roles.txt -p ansible/roles
-ansible-playbook -i hosts ansible/provision.yaml
+# deploy to an existing droplet
+./digital-ocean.sh install -c hosts
+
+# OR
+ansible-galaxy install -r ansible/roles.txt -p ansible/roles -f
+ansible-playbook -i hosts ansible/provision.yaml -u root
 ansible-playbook -i hosts ansible/deploy.yaml -u meat
 ```
 
