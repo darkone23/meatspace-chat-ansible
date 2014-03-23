@@ -35,3 +35,5 @@ twitter_secret: 1
 
 redis_db: 1
 app_id: 1
+
+ban_ttl: 60000

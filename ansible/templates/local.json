@@ -12,5 +12,6 @@
     "meatcounter_out_topic" : "{{ chat_name }}.outgoing",
     "twitter_key": "{{ twitter_key }}",
     "twitter_secret": "{{ twitter_secret }}",
-    "redis_db": {{ redis_db }}
+    "redis_db": {{ redis_db }},
+    "ban_ttl": {{ ban_ttl }}
 }
